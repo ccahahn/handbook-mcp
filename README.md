@@ -1,5 +1,7 @@
 # Handbook
 
+![next.js](https://img.shields.io/badge/next.js-15-black?style=flat-square) ![claude code](https://img.shields.io/badge/claude%20code-2.1.146-orange?style=flat-square)
+
 A reasoning-memory layer for financial decisions, built as a Claude MCP connector. Handbook stores the *why* behind a user's judgment calls (especially tax filings) as a byproduct of a conversation with Claude, and surfaces it when the user asks at the next filing.
 
 ## Layout
