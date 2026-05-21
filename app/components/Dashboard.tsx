@@ -171,7 +171,51 @@ export function Dashboard({ entries }: { entries: Entry[] }) {
           </>
         )}
       </div>
+
+      <InstallCard />
+
+      <footer className="page-footer">
+        <a
+          href="https://github.com/ccahahn/handbook-mcp"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          ccahahn/handbook-mcp
+        </a>
+      </footer>
     </main>
+  );
+}
+
+function InstallCard() {
+  return (
+    <section className="install-card" aria-labelledby="install-heading">
+      <h2 id="install-heading" className="install-heading">
+        Try it yourself
+      </h2>
+      <p className="install-lead">
+        Add the Handbook connector to Claude to start saving your own tax
+        decisions as a byproduct of the conversations you're already having.
+      </p>
+      <div className="install-url">
+        https://handbook-mcp.vercel.app/api/mcp
+      </div>
+      <ol className="install-steps">
+        <li>
+          Open Claude <strong>Settings</strong> &rsaquo;{" "}
+          <strong>Connectors</strong> &rsaquo;{" "}
+          <strong>Add custom connector</strong>.
+        </li>
+        <li>Paste the URL above and confirm.</li>
+        <li>
+          Start a conversation and work through a tax judgment call. Claude
+          will offer to save when you've articulated your reasoning.
+        </li>
+      </ol>
+      <p className="install-note">
+        Custom connectors require Claude Pro, Max, Team, or Enterprise.
+      </p>
+    </section>
   );
 }
 
