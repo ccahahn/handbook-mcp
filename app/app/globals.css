@@ -363,7 +363,7 @@ select.sort:focus {
   width: 5px;
   height: 5px;
   border-radius: 50%;
-  background: var(--ink-3);
+  background: var(--green);
 }
 
 .src-row {

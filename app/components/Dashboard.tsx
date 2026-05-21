@@ -210,17 +210,34 @@ function InstallCard() {
 }
 
 // Detect bullet-style content (lines starting with - or *) and split into items.
+// Lines that don't start with a bullet marker are treated as continuations of
+// the previous bullet, so wrapped multi-line bullets render correctly.
 // Returns null if the text isn't bullet-formatted (so the renderer falls back
 // to paragraph rendering).
 function asBullets(text: string): string[] | null {
-  const lines = text
-    .split(/\r?\n/)
-    .map((l) => l.trim())
-    .filter((l) => l.length > 0);
-  if (lines.length < 2) return null;
-  const looksLikeList = lines.every((l) => /^[-*]\s+/.test(l));
-  if (!looksLikeList) return null;
-  return lines.map((l) => l.replace(/^[-*]\s+/, ""));
+  const lines = text.split(/\r?\n/);
+  const bullets: string[] = [];
+  let current: string | null = null;
+  for (const raw of lines) {
+    const t = raw.trim();
+    if (!t) {
+      if (current !== null) {
+        bullets.push(current);
+        current = null;
+      }
+      continue;
+    }
+    const m = t.match(/^[-*]\s+(.*)$/);
+    if (m) {
+      if (current !== null) bullets.push(current);
+      current = m[1];
+    } else {
+      if (current === null) return null;
+      current += " " + t;
+    }
+  }
+  if (current !== null) bullets.push(current);
+  return bullets.length >= 2 ? bullets : null;
 }
 
 // Parse a source string into { label, url } when it contains a URL.
