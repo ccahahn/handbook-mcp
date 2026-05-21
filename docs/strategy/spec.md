@@ -1,5 +1,5 @@
 **Handbook**  
-A reasoning-memory layer for financial decisions. Handbook stores the why behind a user’s financial judgment calls, as a byproduct of a conversation with Claude, and surfaces it when the user asks. 
+A reasoning-memory layer for financial decisions. Handbook stores the why behind a user’s financial judgment calls, as a byproduct of a conversation with Claude, and surfaces it when the user asks. The financial decisions live in one source, not scattered across chats. 
 
 **Problem**  
 A filer can spend hours on a single judgment call when filing for taxes. By the time they’ve reached the decision, they are exhausted. Notes capture the conclusion ("took the home office deduction") and perhaps a one-sentence blurb on why the decision was made, but may lack the rich context around it. A year later the same person either reconstructs the reasoning from scratch or may repeat the choice without re-examining.
