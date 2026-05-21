@@ -9,34 +9,28 @@ See `../docs/strategy/spec.md` for product framing and `../docs/build/architectu
 - Next.js (App Router) on Vercel
 - `mcp-handler` + `@modelcontextprotocol/sdk` for MCP transport
 - `@neondatabase/serverless` for entry storage (Neon Postgres)
-- `@vercel/blob` for transcript storage
+- `@vercel/blob` for transcript storage (public access for the demo)
 - `zod` for input validation
 
-## One-time setup
+## Deploy
 
-1. Create a Vercel project pointed at this directory.
-2. From the project's **Storage** tab, create a **Neon Postgres** database. This auto-populates `DATABASE_URL`.
-3. Add the **Vercel Blob** store. This auto-populates `BLOB_READ_WRITE_TOKEN`.
-4. Copy `.env.local.example` to `.env.local` and fill in the same values for local dev: `vercel env pull .env.local` is the easiest path.
+1. Import this repo into Vercel. **Set Root Directory to `app`**.
+2. In the project's Storage tab:
+   - Create a **Neon Postgres** database. Auto-populates `DATABASE_URL`.
+   - Add a **Vercel Blob** store. Auto-populates `BLOB_READ_WRITE_TOKEN`.
+3. Deploy. The build runs `npm install` automatically.
 
-The first POST to `/api/init` runs `CREATE TABLE IF NOT EXISTS` and loads seeds. No separate migration step.
-
-## Local dev
-
-```
-npm install
-npm run dev
-```
-
-Connector is now at `http://localhost:3000/api/mcp`.
+No env vars to set manually. `HANDBOOK_NAMESPACE` is optional and defaults to `default`.
 
 ## Load synthetic seeds
 
+After the first deploy succeeds:
+
 ```
-curl -X POST http://localhost:3000/api/init
+curl -X POST https://<your-vercel-url>/api/init
 ```
 
-Idempotent: already-seeded entries are skipped. The route only loads bundled synthetic seeds, so it's safe to leave public.
+Runs `CREATE TABLE IF NOT EXISTS` and writes the bundled seed entries (plus transcripts to Blob). Idempotent: already-seeded entries are skipped.
 
 ## Test with MCP Inspector
 
@@ -44,32 +38,24 @@ Idempotent: already-seeded entries are skipped. The route only loads bundled syn
 npx @modelcontextprotocol/inspector
 ```
 
-UI opens on `http://localhost:6274`. Connect to `http://localhost:3000/api/mcp` (transport: HTTP). Exercise the four tools, watch Postgres/Blob writes happen.
+UI opens on `http://localhost:6274` (Inspector itself runs locally; it just talks to the remote server). Connect to `https://<your-vercel-url>/api/mcp` with HTTP transport. Exercise the four tools, watch Postgres/Blob writes happen.
 
 Requires Node 22.7.5+.
 
-## End-to-end with Claude
+## Add to Claude
 
-Claude requires an HTTPS URL for custom connectors. Two options:
-
-**ngrok (fastest iteration):**
-```
-ngrok http 3000
-```
-Copy the public HTTPS URL, append `/api/mcp`, paste into Claude Settings > Connectors > Add custom connector.
-
-**Vercel preview deploy:**
-```
-vercel deploy
-```
-Use the resulting preview URL with `/api/mcp` appended.
+Settings > Connectors > Add custom connector. Paste `https://<your-vercel-url>/api/mcp`. The connector becomes available in your conversations.
 
 Custom connectors require Pro/Max/Team/Enterprise plan.
+
+## Iterating
+
+Every change is a `git push`. Vercel auto-deploys (30-90 seconds). For prompt iteration on `lib/instructions.ts` and tool descriptions in `app/api/[transport]/route.ts`, this is the slow loop. Accept it for now; revisit a local dev setup if the lag becomes painful.
 
 ## Tools exposed
 
 - `save_to_handbook(decision, filing_year, rationale, alternatives?, sources?, transcript?)` — two-consent save (entry first, then optional transcript)
-- `search_handbook(query)` — substring match over decision/rationale/alternatives
+- `search_handbook(query)` — ILIKE substring match over decision/rationale/alternatives
 - `get_entry(id)` — by id
 - `list_entries()` — most recent first
 
@@ -79,4 +65,4 @@ Tool descriptions and server-level instructions are in `lib/instructions.ts`. Th
 
 - v1 search is `ILIKE` substring matching. Upgrade path is Postgres full-text search (`tsvector` + `ts_rank`) or an embedding index if relevance gets thin past 20-30 entries.
 - Single-tenant by deployment. No user identity layer. See architecture's infrastructure proposals for the multi-user path.
-- Transcript URLs are public (anyone with the URL can read). Suffixes are random so they're unguessable, but treat the URL itself as the access control.
+- Transcript URLs are public (anyone with the URL can read). Suffixes are random so URLs are unguessable, but treat the URL itself as the access control.
