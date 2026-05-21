@@ -3,7 +3,10 @@ import Link from "next/link";
 import { getEntry } from "@/lib/db";
 import type { Entry } from "@/lib/schema";
 
-export const dynamic = "force-dynamic";
+// Transcripts are immutable per design — once saved, the conversation is
+// frozen. Cache the page forever; each unique [id] gets statically rendered
+// on first visit and served from cache thereafter.
+export const revalidate = false;
 
 const MONTHS = [
   "Jan",
@@ -57,7 +60,7 @@ export default async function TranscriptPage({
   let transcript = "";
   let fetchOk = true;
   try {
-    const res = await fetch(entry.transcript_blob_key, { cache: "no-store" });
+    const res = await fetch(entry.transcript_blob_key, { cache: "force-cache" });
     if (!res.ok) {
       fetchOk = false;
     } else {
