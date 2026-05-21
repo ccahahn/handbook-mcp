@@ -87,7 +87,7 @@ Validated on write. Missing required fields, empty rationale, or empty decision 
 
 ## Synthetic data
 
-Synthetic is the default for prototypes([`feedback_synthetic_data_prototypes`](memory)).
+Synthetic is the default for prototypes.
 
 Each conversation is formatted into the entry schema and saved as a seed. Planned shape:
 
