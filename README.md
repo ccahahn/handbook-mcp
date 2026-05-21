@@ -4,9 +4,7 @@
 
 A reasoning-memory layer for financial decisions, built as a Claude MCP connector. Handbook stores the *why* behind a user's judgment calls (especially tax filings) as a byproduct of a conversation with Claude, and surfaces it when the user asks at the next filing.
 
-**[Try the prototype →](https://handbook-mcp.vercel.app/)**
-
-> Saves on this demo instance are shared with other visitors.
+**[See the demo →](https://handbook-mcp.vercel.app/)**
 
 ## Layout
 
