@@ -1,20 +1,33 @@
 :root {
+  /* brand */
+  --green: #2CA01C;
+  --green-dk: #1E7A12;
+  --green-soft: #E7F4E5;
+
+  /* ink (text) */
+  --ink: #11161D;
+  --ink-2: #515c6b;
+  --ink-3: #8a93a0;
+
+  /* surfaces */
   --bg: #f4f5f7;
-  --card: #ffffff;
-  --border: #e7e4d8;
-  --row-divider: #efece1;
+  --surface: #ffffff;
+  --border: #e2e5e9;
+  --border-2: #eef0f2;
+  --hover: #f7f8fa;
+  --inset: #f8f9fb;
+  --chip: #eef0f3;
 
-  --text: #1d1d1b;
-  --muted: #8e8c83;
-  --muted-strong: #5e5d56;
+  /* segments / categorical (reserved for future viz) */
+  --seg-empty: #e3e6ea;
+  --strong: #1E7A12;
+  --strong-seg: #2CA01C;
+  --solid: #5b6573;
+  --solid-seg: #7A8696;
+  --light: #B8740C;
+  --light-seg: #E0991F;
 
-  --green: #1f5b3a;
-  --green-strong: #174a30;
-  --green-soft: #e8efe9;
-
-  --chip-bg: #f1efe5;
-  --chip-text: #4a4842;
-
+  /* radii */
   --radius-card: 16px;
   --radius-pill: 999px;
   --radius-chip: 8px;
@@ -29,11 +42,13 @@ body {
   margin: 0;
   padding: 0;
   background: var(--bg);
-  color: var(--text);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto,
-    "Helvetica Neue", sans-serif;
-  font-size: 15px;
-  line-height: 1.55;
+  color: var(--ink);
+  font-family: var(--font-jakarta), "Plus Jakarta Sans", -apple-system,
+    BlinkMacSystemFont, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-size: 14px;
+  line-height: 1.45;
 }
 
 a {
@@ -90,20 +105,20 @@ select {
 
 .page-title-count {
   font-size: 15px;
-  color: var(--muted);
+  color: var(--ink-3);
   font-weight: 400;
 }
 
 .page-subtitle {
   margin: 6px 0 0 0;
-  color: var(--muted-strong);
+  color: var(--ink-2);
   font-size: 15px;
 }
 
 /* ---------- card wrapper ---------- */
 
 .card {
-  background: var(--card);
+  background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius-card);
   padding: 24px;
@@ -133,7 +148,7 @@ select {
   font-size: 14px;
   border-radius: var(--radius-pill);
   background: transparent;
-  color: var(--text);
+  color: var(--ink);
   border: 1px solid var(--border);
   cursor: pointer;
   transition: background-color 100ms ease, color 100ms ease,
@@ -161,11 +176,11 @@ select {
 .sort-select {
   height: 32px;
   border: 1px solid var(--border);
-  background: var(--card);
+  background: var(--surface);
   border-radius: 8px;
   padding: 0 12px;
   font-size: 14px;
-  color: var(--text);
+  color: var(--ink);
   outline: none;
 }
 
@@ -193,8 +208,8 @@ select {
   font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  color: var(--muted);
-  border-bottom: 1px solid var(--row-divider);
+  color: var(--ink-3);
+  border-bottom: 1px solid var(--border-2);
 }
 
 .row {
@@ -203,13 +218,13 @@ select {
   gap: 12px;
   align-items: center;
   padding: 16px 8px;
-  border-bottom: 1px solid var(--row-divider);
+  border-bottom: 1px solid var(--border-2);
   cursor: pointer;
   transition: background-color 80ms ease;
 }
 
 .row:hover {
-  background: rgba(0, 0, 0, 0.015);
+  background: var(--hover);
 }
 
 .row:focus-visible {
@@ -225,8 +240,8 @@ select {
 .row-chevron {
   display: inline-block;
   font-size: 16px;
-  color: var(--muted);
-  transition: transform 120ms ease;
+  color: var(--ink-3);
+  transition: transform 120ms ease, color 120ms ease;
   user-select: none;
 }
 
@@ -238,7 +253,7 @@ select {
 .row-decision {
   font-weight: 500;
   font-size: 15px;
-  color: var(--text);
+  color: var(--ink);
 }
 
 .row-year-cell {
@@ -250,15 +265,15 @@ select {
   align-items: center;
   height: 24px;
   padding: 0 10px;
-  background: var(--chip-bg);
-  color: var(--chip-text);
+  background: var(--chip);
+  color: var(--ink-2);
   border-radius: 6px;
   font-size: 13px;
   font-weight: 500;
 }
 
 .row-saved {
-  color: var(--muted-strong);
+  color: var(--ink-2);
   font-size: 14px;
 }
 
@@ -267,7 +282,7 @@ select {
 }
 
 .row-transcript.empty {
-  color: var(--muted);
+  color: var(--ink-3);
 }
 
 .row-transcript-link {
@@ -283,8 +298,9 @@ select {
 /* ---------- expanded detail ---------- */
 
 .row-detail {
-  padding: 4px 8px 28px 36px;
-  border-bottom: 1px solid var(--row-divider);
+  padding: 8px 8px 28px 36px;
+  background: var(--inset);
+  border-bottom: 1px solid var(--border-2);
 }
 
 .row-group:last-child .row-detail {
@@ -299,14 +315,14 @@ select {
   font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  color: var(--muted);
+  color: var(--ink-3);
   margin-bottom: 8px;
 }
 
 .row-detail-text {
   white-space: pre-wrap;
   font-size: 15px;
-  color: var(--text);
+  color: var(--ink);
   margin: 0;
   max-width: 720px;
 }
@@ -321,10 +337,10 @@ select {
   display: inline-flex;
   align-items: center;
   padding: 4px 10px;
-  background: var(--chip-bg);
+  background: var(--chip);
   border-radius: var(--radius-chip);
   font-size: 13px;
-  color: var(--chip-text);
+  color: var(--ink-2);
 }
 
 /* ---------- CTA button ---------- */
@@ -345,7 +361,7 @@ select {
 }
 
 .cta:hover {
-  background: var(--green-strong);
+  background: var(--green-dk);
 }
 
 .cta::after {
@@ -358,14 +374,14 @@ select {
 .empty {
   padding: 56px 24px;
   text-align: center;
-  color: var(--muted);
+  color: var(--ink-3);
   font-size: 15px;
 }
 
 .empty-inline {
   padding: 32px 16px;
   text-align: center;
-  color: var(--muted);
+  color: var(--ink-3);
   font-size: 14px;
 }
 
@@ -374,10 +390,10 @@ select {
 .page-footer {
   margin-top: 48px;
   text-align: center;
-  color: var(--muted);
+  color: var(--ink-3);
   font-size: 13px;
 }
 
 .page-footer a {
-  color: var(--muted-strong);
+  color: var(--ink-2);
 }
