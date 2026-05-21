@@ -190,6 +190,17 @@ function Row({
   const hasTranscript = !!entry.transcript_blob_key;
   const transcriptHref = hasTranscript ? `/transcript/${entry.id}` : null;
 
+  const stashEntry = () => {
+    try {
+      sessionStorage.setItem(
+        `handbook:entry:${entry.id}`,
+        JSON.stringify(entry),
+      );
+    } catch {
+      // sessionStorage can fail in private mode; transcript page falls back to API
+    }
+  };
+
   return (
     <div className={`row ${open ? "open" : ""}`}>
       <div
@@ -230,7 +241,10 @@ function Row({
               <Link
                 className="tr-link"
                 href={transcriptHref}
-                onClick={(e) => e.stopPropagation()}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  stashEntry();
+                }}
               >
                 Open
                 <svg
@@ -282,7 +296,11 @@ function Row({
             </div>
             <div className="detail-foot">
               {transcriptHref ? (
-                <Link className="btn-transcript" href={transcriptHref}>
+                <Link
+                  className="btn-transcript"
+                  href={transcriptHref}
+                  onClick={stashEntry}
+                >
                   See full conversation
                   <svg
                     width="12"
