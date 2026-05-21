@@ -502,7 +502,6 @@ select.sort:focus {
 .install-lead {
   font-size: 13.5px;
   color: var(--ink-2);
-  max-width: 60ch;
   margin-bottom: 16px;
 }
 
