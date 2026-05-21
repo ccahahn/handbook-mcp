@@ -3,17 +3,8 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import type { Entry } from "@/lib/schema";
-import {
-  entryStrength,
-  signalsFor,
-  STRENGTH_LABEL,
-  STRENGTH_FILL,
-  STRENGTH_RANK,
-  type Strength,
-} from "@/lib/strength";
 
-type Preview = "real" | "empty" | "one" | "many";
-type SortOrder = "newest" | "oldest" | "strong" | "attention";
+type SortOrder = "newest" | "oldest";
 
 const MONTHS = [
   "Jan",
@@ -36,25 +27,18 @@ function formatDate(iso: string): string {
 }
 
 export function Dashboard({ entries }: { entries: Entry[] }) {
-  const [preview, setPreview] = useState<Preview>("real");
   const [year, setYear] = useState<"all" | string>("all");
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState<SortOrder>("newest");
   const [openIds, setOpenIds] = useState<Set<string>>(new Set());
 
-  const baseEntries = useMemo(() => {
-    if (preview === "empty") return [];
-    if (preview === "one") return entries.slice(0, 1);
-    return entries;
-  }, [entries, preview]);
-
   const years = useMemo(() => {
-    const set = new Set(baseEntries.map((e) => e.filing_year));
+    const set = new Set(entries.map((e) => e.filing_year));
     return Array.from(set).sort((a, b) => b.localeCompare(a));
-  }, [baseEntries]);
+  }, [entries]);
 
   const visible = useMemo(() => {
-    let list = baseEntries.slice();
+    let list = entries.slice();
     if (year !== "all") list = list.filter((e) => e.filing_year === year);
     if (search.trim()) {
       const q = search.toLowerCase();
@@ -62,17 +46,12 @@ export function Dashboard({ entries }: { entries: Entry[] }) {
     }
     list.sort((a, b) => {
       const dir = a.created_at < b.created_at ? 1 : -1;
-      if (sort === "newest") return dir;
-      if (sort === "oldest") return -dir;
-      const byStrength =
-        STRENGTH_RANK[entryStrength(b)] - STRENGTH_RANK[entryStrength(a)];
-      if (sort === "strong") return byStrength !== 0 ? byStrength : dir;
-      return -byStrength !== 0 ? -byStrength : dir;
+      return sort === "newest" ? dir : -dir;
     });
     return list;
-  }, [baseEntries, year, search, sort]);
+  }, [entries, year, search, sort]);
 
-  const totalBase = baseEntries.length;
+  const totalBase = entries.length;
   const filtering = year !== "all" || !!search.trim();
   const countLabel =
     totalBase === 0
@@ -93,159 +72,106 @@ export function Dashboard({ entries }: { entries: Entry[] }) {
     setSearch("");
   };
 
-  const previewButtons: { state: Preview; label: string }[] = [
-    { state: "empty", label: "Empty" },
-    { state: "one", label: "1 entry" },
-    { state: "many", label: "Many" },
-  ];
-
   return (
-    <>
-      <header className="appbar">
-        <div className="brand">
-          <span className="logo" aria-hidden>
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-              <path
-                d="M2.5 7.4l3 3 6-6.5"
-                stroke="#fff"
-                strokeWidth="2.4"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </span>
-          Handbook
-        </div>
-        <div className="appbar-right">
-          <div className="preview" role="group" aria-label="Preview state">
-            <span className="pv-label">Preview</span>
-            {previewButtons.map((p) => (
+    <main className="page">
+      <div className="page-head">
+        <h1>Decisions</h1>
+        <span className="count">{countLabel}</span>
+      </div>
+      <p className="subtle">
+        Filing choices you saved while talking them through, open one to see
+        the reasoning.
+      </p>
+
+      {totalBase > 0 && (
+        <div className="toolbar">
+          <div
+            className="years"
+            role="group"
+            aria-label="Filter by filing year"
+          >
+            <button
+              type="button"
+              aria-pressed={year === "all"}
+              onClick={() => setYear("all")}
+            >
+              All years
+            </button>
+            {years.map((y) => (
               <button
-                key={p.state}
+                key={y}
                 type="button"
-                aria-pressed={preview === p.state}
-                onClick={() => {
-                  setPreview(p.state);
-                  setOpenIds(new Set());
-                }}
+                aria-pressed={year === y}
+                onClick={() => setYear(y)}
               >
-                {p.label}
+                {y}
               </button>
             ))}
           </div>
-          <div className="avatar" aria-hidden>
-            JD
+          <div className="tools">
+            <label className="search">
+              <svg
+                width="15"
+                height="15"
+                viewBox="0 0 15 15"
+                fill="none"
+                stroke="#8a93a0"
+                strokeWidth="1.7"
+              >
+                <circle cx="6.5" cy="6.5" r="4.3" />
+                <path d="M9.8 9.8L13 13" strokeLinecap="round" />
+              </svg>
+              <input
+                type="text"
+                placeholder="Search decisions"
+                aria-label="Search decisions"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+            </label>
+            <select
+              className="sort"
+              value={sort}
+              onChange={(e) => setSort(e.target.value as SortOrder)}
+              aria-label="Sort"
+            >
+              <option value="newest">Newest first</option>
+              <option value="oldest">Oldest first</option>
+            </select>
           </div>
         </div>
-      </header>
+      )}
 
-      <main className="page">
-        <div className="page-head">
-          <h1>Decisions</h1>
-          <span className="count">{countLabel}</span>
-        </div>
-        <p className="subtle">
-          Filing choices you saved while talking them through, open one to see
-          the reasoning.
-        </p>
-
-        {totalBase > 0 && (
-          <div className="toolbar">
-            <div
-              className="years"
-              role="group"
-              aria-label="Filter by filing year"
-            >
-              <button
-                type="button"
-                aria-pressed={year === "all"}
-                onClick={() => setYear("all")}
-              >
-                All years
-              </button>
-              {years.map((y) => (
-                <button
-                  key={y}
-                  type="button"
-                  aria-pressed={year === y}
-                  onClick={() => setYear(y)}
-                >
-                  {y}
-                </button>
+      <div className="panel">
+        {totalBase === 0 ? (
+          <EmptyState />
+        ) : visible.length === 0 ? (
+          <NoResultsState onClear={clearFilters} />
+        ) : (
+          <>
+            <div className="thead">
+              <div className="grid">
+                <span />
+                <span>Decision</span>
+                <span>Year</span>
+                <span>Saved</span>
+                <span>Transcript</span>
+              </div>
+            </div>
+            <div>
+              {visible.map((entry) => (
+                <Row
+                  key={entry.id}
+                  entry={entry}
+                  open={openIds.has(entry.id)}
+                  onToggle={() => toggleOpen(entry.id)}
+                />
               ))}
             </div>
-            <div className="tools">
-              <label className="search">
-                <svg
-                  width="15"
-                  height="15"
-                  viewBox="0 0 15 15"
-                  fill="none"
-                  stroke="#8a93a0"
-                  strokeWidth="1.7"
-                >
-                  <circle cx="6.5" cy="6.5" r="4.3" />
-                  <path d="M9.8 9.8L13 13" strokeLinecap="round" />
-                </svg>
-                <input
-                  type="text"
-                  placeholder="Search decisions"
-                  aria-label="Search decisions"
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                />
-              </label>
-              <select
-                className="sort"
-                value={sort}
-                onChange={(e) => setSort(e.target.value as SortOrder)}
-                aria-label="Sort"
-              >
-                <option value="newest">Newest first</option>
-                <option value="oldest">Oldest first</option>
-                <option value="strong">Strongest first</option>
-                <option value="attention">Needs attention first</option>
-              </select>
-            </div>
-          </div>
+          </>
         )}
-
-        <div className="panel">
-          {totalBase === 0 ? (
-            <EmptyState />
-          ) : visible.length === 0 ? (
-            <NoResultsState onClear={clearFilters} />
-          ) : (
-            <>
-              <div className="thead">
-                <div className="grid">
-                  <span />
-                  <span>Decision</span>
-                  <span
-                    title="How well-reasoned and documented this decision is"
-                  >
-                    Strength
-                  </span>
-                  <span>Year</span>
-                  <span>Saved</span>
-                  <span>Transcript</span>
-                </div>
-              </div>
-              <div>
-                {visible.map((entry) => (
-                  <Row
-                    key={entry.id}
-                    entry={entry}
-                    open={openIds.has(entry.id)}
-                    onToggle={() => toggleOpen(entry.id)}
-                  />
-                ))}
-              </div>
-            </>
-          )}
-        </div>
-      </main>
-    </>
+      </div>
+    </main>
   );
 }
 
@@ -258,9 +184,11 @@ function Row({
   open: boolean;
   onToggle: () => void;
 }) {
-  const strength = entryStrength(entry);
-  const sig = signalsFor(entry);
-  const transcriptHref = sig.hasTranscript ? `/transcript/${entry.id}` : null;
+  const hasAlternatives =
+    !!entry.alternatives && entry.alternatives.trim().length > 0;
+  const hasSources = (entry.sources?.length ?? 0) >= 1;
+  const hasTranscript = !!entry.transcript_blob_key;
+  const transcriptHref = hasTranscript ? `/transcript/${entry.id}` : null;
 
   return (
     <div className={`row ${open ? "open" : ""}`}>
@@ -293,9 +221,6 @@ function Row({
             </svg>
           </span>
           <span className="decision">{entry.decision}</span>
-          <span>
-            <StrengthMeter strength={strength} />
-          </span>
           <span className="yr-cell">
             <span className="year-chip">{entry.filing_year}</span>
           </span>
@@ -321,7 +246,7 @@ function Row({
                 </svg>
               </Link>
             ) : (
-              <span className="tr-none">&mdash;</span>
+              <span className="tr-none"></span>
             )}
           </span>
         </div>
@@ -335,7 +260,7 @@ function Row({
             </div>
             <div className="field">
               <div className="field-label">Alternatives considered</div>
-              {sig.hasAlternatives ? (
+              {hasAlternatives ? (
                 <div className="field-body">{entry.alternatives}</div>
               ) : (
                 <div className="field-body none">No alternatives recorded.</div>
@@ -343,7 +268,7 @@ function Row({
             </div>
             <div className="field">
               <div className="field-label">Sources</div>
-              {sig.hasSources ? (
+              {hasSources ? (
                 <div className="src-row">
                   {entry.sources.map((s, i) => (
                     <span key={i} className="src">
@@ -354,31 +279,6 @@ function Row({
               ) : (
                 <div className="field-body none">No sources cited.</div>
               )}
-            </div>
-            <div className="field">
-              <div className="rating-head">
-                <span className="field-label" style={{ margin: 0 }}>
-                  Why this rating
-                </span>
-                <StrengthMeter strength={strength} />
-              </div>
-              <div className="signals">
-                <Signal
-                  ok={sig.hasAlternatives}
-                  yes="Alternatives weighed"
-                  no="No alternatives weighed"
-                />
-                <Signal
-                  ok={sig.hasSources}
-                  yes={`${entry.sources.length} ${entry.sources.length === 1 ? "source" : "sources"} cited`}
-                  no="No sources"
-                />
-                <Signal
-                  ok={sig.hasTranscript}
-                  yes="Transcript saved"
-                  no="Transcript not saved"
-                />
-              </div>
             </div>
             <div className="detail-foot">
               {transcriptHref ? (
@@ -406,40 +306,6 @@ function Row({
         </div>
       </div>
     </div>
-  );
-}
-
-function StrengthMeter({ strength }: { strength: Strength }) {
-  const fill = STRENGTH_FILL[strength];
-  return (
-    <span
-      className={`strength s-${strength}`}
-      aria-label={`Decision strength: ${STRENGTH_LABEL[strength]}`}
-    >
-      <span className="meter" aria-hidden>
-        {[1, 2, 3].map((i) => (
-          <i key={i} className={i <= fill ? "on" : ""} />
-        ))}
-      </span>
-      <span className="s-word">{STRENGTH_LABEL[strength]}</span>
-    </span>
-  );
-}
-
-function Signal({
-  ok,
-  yes,
-  no,
-}: {
-  ok: boolean;
-  yes: string;
-  no: string;
-}) {
-  return (
-    <span className={`sig ${ok ? "yes" : "no"}`}>
-      <span className="ic">{ok ? "✓" : "–"}</span>
-      {ok ? yes : no}
-    </span>
   );
 }
 

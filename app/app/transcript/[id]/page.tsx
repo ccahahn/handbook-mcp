@@ -112,82 +112,58 @@ function TranscriptShell({
   downloadName?: string;
 }) {
   return (
-    <>
-      <header className="appbar">
-        <Link href="/" className="brand">
-          <span className="logo" aria-hidden>
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-              <path
-                d="M2.5 7.4l3 3 6-6.5"
-                stroke="#fff"
-                strokeWidth="2.4"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </span>
-          Handbook
-        </Link>
-        <div className="appbar-right">
-          <div className="avatar" aria-hidden>
-            JD
+    <main className="page">
+      <Link href="/" className="transcript-back">
+        <svg
+          width="12"
+          height="12"
+          viewBox="0 0 12 12"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <path d="M7 3L4 6l3 3" />
+        </svg>
+        Decisions
+      </Link>
+
+      <div className="transcript-header">
+        <div className="transcript-title-block">
+          <h1>{entry.decision}</h1>
+          <div className="transcript-meta">
+            Filing year {entry.filing_year} · saved{" "}
+            {formatDate(entry.created_at)}
           </div>
         </div>
-      </header>
-
-      <main className="page">
-        <Link href="/" className="transcript-back">
-          <svg
-            width="12"
-            height="12"
-            viewBox="0 0 12 12"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
+        {downloadHref && (
+          <a
+            className="transcript-download"
+            href={downloadHref}
+            download={downloadName}
+            target="_blank"
+            rel="noopener noreferrer"
           >
-            <path d="M7 3L4 6l3 3" />
-          </svg>
-          Decisions
-        </Link>
-
-        <div className="transcript-header">
-          <div className="transcript-title-block">
-            <h1>{entry.decision}</h1>
-            <div className="transcript-meta">
-              Filing year {entry.filing_year} · saved{" "}
-              {formatDate(entry.created_at)}
-            </div>
-          </div>
-          {downloadHref && (
-            <a
-              className="transcript-download"
-              href={downloadHref}
-              download={downloadName}
-              target="_blank"
-              rel="noopener noreferrer"
+            <svg
+              width="12"
+              height="12"
+              viewBox="0 0 12 12"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
             >
-              <svg
-                width="12"
-                height="12"
-                viewBox="0 0 12 12"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M6 2v6m-3-3l3 3 3-3M2 10h8" />
-              </svg>
-              Download .txt
-            </a>
-          )}
-        </div>
+              <path d="M6 2v6m-3-3l3 3 3-3M2 10h8" />
+            </svg>
+            Download .txt
+          </a>
+        )}
+      </div>
 
-        {body}
-      </main>
-    </>
+      {body}
+    </main>
   );
 }
 
