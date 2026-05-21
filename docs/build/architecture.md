@@ -201,17 +201,3 @@ These are things that would be needed in production but are not built in the dem
 - **Backup and export.** Users own the record per the spec's trust model. A real Handbook needs a one-click export to a portable archive (the markdown corpus plus the JSON).
 - **Rate limiting and abuse.** A public MCP connector accepts traffic from any Claude install that adds it. Production needs request-level limits and a way to revoke abusive installs.
 
-The Checker (verification layer) is intentionally excluded from this list. It lives in a separate spec.
-
-## Out of scope
-
-- *Verification / the Checker.* A separate layer with a separate spec. v1 entries are user-asserted, not verified.
-- *Autonomous writes.* Every entry is user-confirmed; the system never saves on its own.
-- *Multi-contributor entries.* The MVP assumes a single decision-maker who both reasons and commits. Real small businesses split this across bookkeeper, owner, and accountant, which would require an entity-scoped record with per-contribution attribution.
-- *A standalone pattern-matching dashboard* (scores, filters, decision clustering).
-
-## Open questions
-
-- **Discovery.** How is the Handbook surfaced to the user the first time: how do they learn the connector is there and what it does?
-- **CoWork write capability.** Does Claude reliably write to CoWork files in the user's workspace from inside a tool-using conversation, or is the user-side write a manual step? If manual, the mirror step needs UX in the conversation itself.
-- **Search quality on a small corpus.** With 6 to 10 seed entries, similarity search may be coarse. Worth a pass on whether keyword + filing-year filter is more honest than embedding similarity at this size.

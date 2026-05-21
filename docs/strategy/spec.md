@@ -35,5 +35,11 @@ Retrieval value
 * At a re-encountered decision, whether a relevant prior entry was surfaced.
 
 **What we're not doing**
+- *Verification / the Checker.* A separate layer with a separate spec. v1 entries are user-asserted, not verified.
+- *Autonomous writes.* Every entry is user-confirmed; the system never saves on its own.
+- *Multi-contributor entries.* The MVP assumes a single decision-maker who both reasons and commits. Real small businesses split this across bookkeeper, owner, and accountant, which would require an entity-scoped record with per-contribution attribution.
+- *Agentic follow-ups after a save.* Many tax decisions have a time-sensitive tail. An amendment carries a §6511 backstop (roughly three years from the original filing). A deferred deduction has a follow-up action in a later filing year. An installment election spans years of dated reminders. 
+- *After a save, an agent could put dated tasks directly on the user's calendar (Google Calendar, Outlook)*: "Second amendment due by [date]; §6511 window closes [date]." This extends the Handbook from a memory layer into a quiet operational partner, and brings real peace of mind. The calendar integration itself is well-trodden and not the hard part. Google Calendar is already a first-party Claude connector, so this becomes a tool-orchestration story, not a new integration. 
 
-*Agentic follow-ups after a save.* Many tax decisions have a time-sensitive tail. An amendment carries a §6511 backstop (roughly three years from the original filing). A deferred deduction has a follow-up action in a later filing year. An installment election spans years of dated reminders. After a save, an agent could put dated tasks directly on the user's calendar (Google Calendar, Outlook): "Second amendment due by [date]; §6511 window closes [date]." This extends the Handbook from a memory layer into a quiet operational partner, and brings real peace of mind. The calendar integration itself is well-trodden and not the hard part. Google Calendar is already a first-party Claude connector, so this becomes a tool-orchestration story, not a new integration. Out of scope for v1.
+**Open questions**
+- **Discovery.** How is the Handbook surfaced to the user the first time: how do they learn the connector is there and what it does?
