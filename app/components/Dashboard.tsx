@@ -184,8 +184,9 @@ function InstallCard() {
         Try it yourself
       </h2>
       <p className="install-lead">
-        Add the Handbook connector to Claude to add an entry. Saves on this
-        demo instance are shared with other visitors.
+        Add the Handbook connector to Claude to add an entry.
+        <br />
+        Saves on this demo instance are shared with other visitors.
       </p>
       <div className="install-url">
         https://handbook-mcp.vercel.app/api/mcp
