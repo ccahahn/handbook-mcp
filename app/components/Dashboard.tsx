@@ -175,6 +175,38 @@ export function Dashboard({ entries }: { entries: Entry[] }) {
   );
 }
 
+// Detect bullet-style content (lines starting with - or *) and split into items.
+// Returns null if the text isn't bullet-formatted (so the renderer falls back
+// to paragraph rendering).
+function asBullets(text: string): string[] | null {
+  const lines = text
+    .split(/\r?\n/)
+    .map((l) => l.trim())
+    .filter((l) => l.length > 0);
+  if (lines.length < 2) return null;
+  const looksLikeList = lines.every((l) => /^[-*]\s+/.test(l));
+  if (!looksLikeList) return null;
+  return lines.map((l) => l.replace(/^[-*]\s+/, ""));
+}
+
+// Parse a source string into { label, url } when it contains a URL.
+// Returns null when no URL is present — those sources are hidden in the UI.
+function parseSource(text: string): { label: string; url: string } | null {
+  const urlMatch = text.match(/https?:\/\/[^\s)]+/);
+  if (!urlMatch) return null;
+  const url = urlMatch[0];
+  let label = text.replace(url, "").trim();
+  label = label.replace(/^[\s\-:,()|—]+|[\s\-:,()|—]+$/g, "").trim();
+  if (!label) {
+    try {
+      label = new URL(url).hostname.replace(/^www\./, "");
+    } catch {
+      label = url;
+    }
+  }
+  return { label, url };
+}
+
 function Row({
   entry,
   open,
@@ -186,9 +218,17 @@ function Row({
 }) {
   const hasAlternatives =
     !!entry.alternatives && entry.alternatives.trim().length > 0;
-  const hasSources = (entry.sources?.length ?? 0) >= 1;
+  const linkedSources = (entry.sources ?? [])
+    .map(parseSource)
+    .filter((s): s is { label: string; url: string } => s !== null);
+  const hasSources = linkedSources.length > 0;
   const hasTranscript = !!entry.transcript_blob_key;
   const transcriptHref = hasTranscript ? `/transcript/${entry.id}` : null;
+
+  const rationaleBullets = asBullets(entry.rationale);
+  const alternativesBullets = hasAlternatives
+    ? asBullets(entry.alternatives)
+    : null;
 
   const stashEntry = () => {
     try {
@@ -270,30 +310,62 @@ function Row({
           <div className="detail-pad">
             <div className="field">
               <div className="field-label">Reasoning</div>
-              <div className="field-body">{entry.rationale}</div>
+              {rationaleBullets ? (
+                <ul className="field-list">
+                  {rationaleBullets.map((b, i) => (
+                    <li key={i}>{b}</li>
+                  ))}
+                </ul>
+              ) : (
+                <div className="field-body">{entry.rationale}</div>
+              )}
             </div>
             <div className="field">
               <div className="field-label">Alternatives considered</div>
               {hasAlternatives ? (
-                <div className="field-body">{entry.alternatives}</div>
+                alternativesBullets ? (
+                  <ul className="field-list">
+                    {alternativesBullets.map((b, i) => (
+                      <li key={i}>{b}</li>
+                    ))}
+                  </ul>
+                ) : (
+                  <div className="field-body">{entry.alternatives}</div>
+                )
               ) : (
                 <div className="field-body none">No alternatives recorded.</div>
               )}
             </div>
-            <div className="field">
-              <div className="field-label">Sources</div>
-              {hasSources ? (
+            {hasSources && (
+              <div className="field">
+                <div className="field-label">Sources</div>
                 <div className="src-row">
-                  {entry.sources.map((s, i) => (
-                    <span key={i} className="src">
-                      {s}
-                    </span>
+                  {linkedSources.map((s, i) => (
+                    <a
+                      key={i}
+                      className="src src-link"
+                      href={s.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {s.label}
+                      <svg
+                        width="10"
+                        height="10"
+                        viewBox="0 0 11 11"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.8"
+                        strokeLinecap="round"
+                        aria-hidden
+                      >
+                        <path d="M3 5.5h5M5.5 3l2.5 2.5L5.5 8" />
+                      </svg>
+                    </a>
                   ))}
                 </div>
-              ) : (
-                <div className="field-body none">No sources cited.</div>
-              )}
-            </div>
+              </div>
+            )}
             <div className="detail-foot">
               {transcriptHref ? (
                 <Link

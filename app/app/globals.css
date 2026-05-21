@@ -337,6 +337,35 @@ select.sort:focus {
   font-style: italic;
 }
 
+.field-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  max-width: 640px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field-list li {
+  position: relative;
+  padding-left: 18px;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--ink-2);
+}
+
+.field-list li::before {
+  content: "";
+  position: absolute;
+  left: 4px;
+  top: 0.7em;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--ink-3);
+}
+
 .src-row {
   display: flex;
   flex-wrap: wrap;
@@ -351,6 +380,25 @@ select.sort:focus {
   border: 1px solid var(--border);
   padding: 4px 9px;
   border-radius: 6px;
+}
+
+.src-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  text-decoration: none;
+  transition: background 0.12s ease, border-color 0.12s ease, color 0.12s ease;
+}
+
+.src-link:hover {
+  background: var(--green-soft);
+  border-color: var(--green);
+  color: var(--green-dk);
+  text-decoration: none;
+}
+
+.src-link svg {
+  opacity: 0.7;
 }
 
 .detail-foot {
