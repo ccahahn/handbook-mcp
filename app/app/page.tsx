@@ -1,10 +1,9 @@
 import { listEntries } from "@/lib/db";
 import { Dashboard } from "@/components/Dashboard";
 
-// Cached page. Backstop revalidate of 1 hour; explicit revalidatePath("/") in
-// save_to_handbook and /api/init busts the cache as soon as the entry list
-// actually changes.
-export const revalidate = 3600;
+// Always fresh. listEntries is one cheap Postgres query; for a sparse-traffic
+// demo this is far simpler than juggling cache invalidation from the MCP tool.
+export const dynamic = "force-dynamic";
 
 export default async function Page() {
   const entries = await listEntries();

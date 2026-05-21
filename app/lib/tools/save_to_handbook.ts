@@ -1,4 +1,3 @@
-import { revalidatePath } from "next/cache";
 import { EntryInputSchema, type Entry, type EntryInput } from "../schema";
 import { putEntry } from "../db";
 import { putTranscript } from "../blob";
@@ -32,8 +31,6 @@ export async function saveToHandbook(input: EntryInput): Promise<SaveResult> {
   };
 
   await putEntry(entry);
-  revalidatePath("/");
-
   const markdown = renderEntryMarkdown(entry);
   return { entry, markdown, transcript_url: transcript_blob_key };
 }

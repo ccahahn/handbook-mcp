@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import seeds from "@/data/seed_entries.json";
 import { putEntry, getEntry, ensureSchema } from "@/lib/db";
@@ -65,6 +64,5 @@ export async function POST() {
     });
   }
 
-  revalidatePath("/");
   return NextResponse.json({ count: parsedSeeds.length, results });
 }
