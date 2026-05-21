@@ -194,8 +194,7 @@ function InstallCard() {
         Try it yourself
       </h2>
       <p className="install-lead">
-        Add the Handbook connector to Claude to start saving your own tax
-        decisions as a byproduct of the conversations you're already having.
+        Add the Handbook connector to Claude to add an entry.
       </p>
       <div className="install-url">
         https://handbook-mcp.vercel.app/api/mcp
