@@ -4,22 +4,35 @@ import type { Entry } from "./schema";
 const sql = neon(process.env.DATABASE_URL!);
 const namespace = process.env.HANDBOOK_NAMESPACE || "default";
 
-export async function ensureSchema(): Promise<void> {
-  await sql`
-    CREATE TABLE IF NOT EXISTS entries (
-      id TEXT PRIMARY KEY,
-      namespace TEXT NOT NULL DEFAULT 'default',
-      decision TEXT NOT NULL,
-      filing_year TEXT NOT NULL,
-      rationale TEXT NOT NULL,
-      alternatives TEXT NOT NULL DEFAULT '',
-      sources JSONB NOT NULL DEFAULT '[]'::jsonb,
-      transcript_blob_key TEXT,
-      created_at TIMESTAMPTZ NOT NULL DEFAULT now()
-    )
-  `;
-  await sql`CREATE INDEX IF NOT EXISTS entries_ns_created_idx ON entries (namespace, created_at DESC)`;
-  await sql`CREATE INDEX IF NOT EXISTS entries_ns_year_idx ON entries (namespace, filing_year)`;
+// Memoized schema bootstrap. CREATE TABLE/INDEX IF NOT EXISTS are idempotent,
+// but we still want to fire them once per server instance, not once per query.
+// If bootstrap fails, the promise is cleared so the next call retries.
+let schemaReady: Promise<void> | null = null;
+
+export function ensureSchema(): Promise<void> {
+  if (!schemaReady) {
+    schemaReady = (async () => {
+      await sql`
+        CREATE TABLE IF NOT EXISTS entries (
+          id TEXT PRIMARY KEY,
+          namespace TEXT NOT NULL DEFAULT 'default',
+          decision TEXT NOT NULL,
+          filing_year TEXT NOT NULL,
+          rationale TEXT NOT NULL,
+          alternatives TEXT NOT NULL DEFAULT '',
+          sources JSONB NOT NULL DEFAULT '[]'::jsonb,
+          transcript_blob_key TEXT,
+          created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+        )
+      `;
+      await sql`CREATE INDEX IF NOT EXISTS entries_ns_created_idx ON entries (namespace, created_at DESC)`;
+      await sql`CREATE INDEX IF NOT EXISTS entries_ns_year_idx ON entries (namespace, filing_year)`;
+    })().catch((e) => {
+      schemaReady = null;
+      throw e;
+    });
+  }
+  return schemaReady;
 }
 
 type EntryRow = {
@@ -47,6 +60,7 @@ function rowToEntry(row: EntryRow): Entry {
 }
 
 export async function putEntry(entry: Entry): Promise<void> {
+  await ensureSchema();
   await sql`
     INSERT INTO entries (id, namespace, decision, filing_year, rationale, alternatives, sources, transcript_blob_key, created_at)
     VALUES (
@@ -65,6 +79,7 @@ export async function putEntry(entry: Entry): Promise<void> {
 }
 
 export async function getEntry(id: string): Promise<Entry | null> {
+  await ensureSchema();
   const rows = (await sql`
     SELECT id, decision, filing_year, rationale, alternatives, sources, transcript_blob_key, created_at
     FROM entries
@@ -75,6 +90,7 @@ export async function getEntry(id: string): Promise<Entry | null> {
 }
 
 export async function listEntries(): Promise<Entry[]> {
+  await ensureSchema();
   const rows = (await sql`
     SELECT id, decision, filing_year, rationale, alternatives, sources, transcript_blob_key, created_at
     FROM entries
@@ -87,6 +103,7 @@ export async function listEntries(): Promise<Entry[]> {
 export async function searchEntries(query: string): Promise<Entry[]> {
   const q = query.trim();
   if (!q) return [];
+  await ensureSchema();
   const like = `%${q}%`;
   const rows = (await sql`
     SELECT id, decision, filing_year, rationale, alternatives, sources, transcript_blob_key, created_at
