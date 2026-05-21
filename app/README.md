@@ -17,8 +17,7 @@ See `../docs/strategy/spec.md` for product framing and `../docs/build/architectu
 1. Create a Vercel project pointed at this directory.
 2. From the project dashboard, add the **Upstash Redis** integration via Marketplace. This auto-populates `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN`.
 3. Add the **Vercel Blob** store. This auto-populates `BLOB_READ_WRITE_TOKEN`.
-4. Set `INIT_SECRET` to a long random string. This gates the seed-loader endpoint.
-5. Copy `.env.local.example` to `.env.local` and fill in the same values for local dev: `vercel env pull .env.local` is the easiest path.
+4. Copy `.env.local.example` to `.env.local` and fill in the same values for local dev: `vercel env pull .env.local` is the easiest path.
 
 ## Local dev
 
@@ -32,11 +31,10 @@ Connector is now at `http://localhost:3000/api/mcp`.
 ## Load synthetic seeds
 
 ```
-curl -X POST http://localhost:3000/api/init \
-  -H "Authorization: Bearer $INIT_SECRET"
+curl -X POST http://localhost:3000/api/init
 ```
 
-Idempotent: already-seeded entries are skipped.
+Idempotent: already-seeded entries are skipped. The route only loads bundled synthetic seeds, so it's safe to leave public.
 
 ## Test with MCP Inspector
 

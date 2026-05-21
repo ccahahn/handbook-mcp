@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { z } from "zod";
 import seeds from "@/data/seed_entries.json";
 import { putEntry, getEntry } from "@/lib/kv";
@@ -18,13 +18,10 @@ const SeedEntrySchema = z.object({
   created_at: z.string(),
 });
 
-export async function POST(req: NextRequest) {
-  const auth = req.headers.get("authorization") || "";
-  const provided = auth.replace(/^Bearer\s+/i, "");
-  if (!process.env.INIT_SECRET || provided !== process.env.INIT_SECRET) {
-    return NextResponse.json({ error: "unauthorized" }, { status: 401 });
-  }
-
+// Public POST. The route only loads bundled synthetic seeds and is idempotent
+// (already-seeded ids are skipped). No user data can be injected from outside,
+// so no auth check in v1. Revisit if seed loading ever grows destructive modes.
+export async function POST() {
   const parsedSeeds = z.array(SeedEntrySchema).parse(seeds);
   const results: {
     id: string;

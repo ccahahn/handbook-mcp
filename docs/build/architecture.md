@@ -110,7 +110,6 @@ Each conversation is formatted into the entry schema and saved as a seed. Planne
 | `UPSTASH_REDIS_REST_TOKEN` | — | Upstash Redis auth token |
 | `BLOB_READ_WRITE_TOKEN` | — | Vercel Blob read/write token |
 | `HANDBOOK_NAMESPACE` | `default` | Redis and Blob key prefix; lets the same instance back multiple deployments without collision |
-| `INIT_SECRET` | — | shared secret required to invoke the seed-loader init route |
 
 No auth tokens for end users. The demo connector is single-tenant by deployment.
 
