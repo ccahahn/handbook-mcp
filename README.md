@@ -6,6 +6,8 @@ A reasoning-memory layer for financial decisions, built as a Claude MCP connecto
 
 **[Try the prototype →](https://handbook-mcp.vercel.app/)**
 
+> Shared demo instance: any entries saved through the connector are visible to other visitors on the dashboard. Per-user isolation is documented under [architecture > infrastructure proposals](./docs/build/architecture.md) but not built in v1.
+
 ## Layout
 
 - [`/app`](./app) — the MCP connector (Next.js on Vercel, Neon Postgres for entries, Vercel Blob for transcripts). Start here for the quickstart.

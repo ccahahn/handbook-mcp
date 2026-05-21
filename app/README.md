@@ -48,6 +48,8 @@ Settings > Connectors > Add custom connector. Paste `https://<your-vercel-url>/a
 
 Custom connectors require Pro/Max/Team/Enterprise plan.
 
+**Note:** the live demo at `https://handbook-mcp.vercel.app` is a shared single-tenant deployment. Saves go into one common namespace, so any entries saved through the connector are visible to other visitors on the dashboard. Per-user isolation lives in the architecture doc's infrastructure proposals and is not built in v1.
+
 ## Iterating
 
 Every change is a `git push`. Vercel auto-deploys (30-90 seconds). For prompt iteration on `lib/instructions.ts` and tool descriptions in `app/api/[transport]/route.ts`, this is the slow loop. Accept it for now; revisit a local dev setup if the lag becomes painful.

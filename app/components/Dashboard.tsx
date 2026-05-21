@@ -202,7 +202,9 @@ function InstallCard() {
         </li>
       </ol>
       <p className="install-note">
-        Custom connectors require Claude Pro, Max, Team, or Enterprise.
+        This is a shared demo instance: any entries you save are visible to
+        other visitors on this dashboard. Custom connectors require Claude
+        Pro, Max, Team, or Enterprise.
       </p>
     </section>
   );
