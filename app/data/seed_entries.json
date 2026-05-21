@@ -1,0 +1,16 @@
+[
+  {
+    "id": "01J9X4K6T3M2NZQYV8P1WGB7HE",
+    "decision": "took the home office deduction",
+    "filing_year": "2024",
+    "rationale": "the office is the only place I do client work. separate room, door closes, no kids in there during the day. I don't sit at the kitchen table to write contracts or do invoicing. spent maybe an hour worrying about audit risk and decided that's not a real risk if the use is actually regular and exclusive, which mine is. the deduction is small enough that the audit-risk argument was overblown anyway, somewhere around $1800 by my math.",
+    "alternatives": "considered the simplified method ($5/sqft, capped at 300sqft so $1500 max). actual expense method came out higher because the room is 220sqft and the house operating costs (utilities, insurance, depreciation) work out to roughly $8/sqft for that share. went with actual. also briefly considered skipping the deduction entirely to reduce return complexity but the dollar amount made that not worth it.",
+    "sources": [
+      "IRS Pub 587 (Business Use of Your Home)",
+      "Form 8829 instructions",
+      "long thread with accountant friend on what regular and exclusive use actually means in practice"
+    ],
+    "transcript": "[User] working on my 2024 return. i used the spare room as my office all year. want to take the home office deduction but worried about audit risk.\n\n[Claude] What's the room used for besides the office?\n\n[User] the office is the only place i do client work. separate room, door closes, no kids in there during the day. i don't sit at the kitchen table to write contracts or do invoicing.\n\n[Claude] That's clean regular and exclusive use, which is what Pub 587 actually tests for. The audit-risk framing gets overblown for situations like yours.\n\n[User] yeah i've been reading 587. also had a long thread with my accountant friend about what regular and exclusive really means in practice. spent maybe an hour worrying about audit risk and decided that's not a real risk if the use is actually regular and exclusive, which mine is.\n\n[Claude] And the dollar amount?\n\n[User] the deduction is small enough that the audit-risk argument was overblown anyway, somewhere around $1800 by my math.\n\n[Claude] Simplified or actual?\n\n[User] considered simplified, $5/sqft capped at 300sqft so $1500 max. actual expense method came out higher because the room is 220sqft and the house operating costs (utilities, insurance, depreciation) work out to roughly $8/sqft for that share. going with actual.\n\n[Claude] Did you weigh just skipping it?\n\n[User] briefly considered skipping the deduction entirely to reduce return complexity but the dollar amount made that not worth it.\n\n[Claude] So: home office deduction, actual expense method, 220sqft, around $1800.\n\n[User] yes. that's the call.",
+    "created_at": "2025-03-14T19:23:00Z"
+  }
+]
