@@ -48,7 +48,7 @@ Settings > Connectors > Add custom connector. Paste `https://<your-vercel-url>/a
 
 Custom connectors require Pro/Max/Team/Enterprise plan.
 
-**Note:** the live demo at `https://handbook-mcp.vercel.app` is a shared single-tenant deployment. Saves go into one common namespace, so any entries saved through the connector are visible to other visitors on the dashboard. Per-user isolation lives in the architecture doc's infrastructure proposals and is not built in v1.
+Saves on the live demo are shared with other visitors.
 
 ## Iterating
 

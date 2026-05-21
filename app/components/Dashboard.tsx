@@ -202,9 +202,8 @@ function InstallCard() {
         </li>
       </ol>
       <p className="install-note">
-        This is a shared demo instance: any entries you save are visible to
-        other visitors on this dashboard. Custom connectors require Claude
-        Pro, Max, Team, or Enterprise.
+        Saves on this demo instance are shared with other visitors. Custom
+        connectors require Claude Pro, Max, Team, or Enterprise.
       </p>
     </section>
   );
