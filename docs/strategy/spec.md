@@ -32,4 +32,8 @@ Capture health (leading indicators)
 
 Retrieval value
 
-* At a re-encountered decision, whether a relevant prior entry was surfaced. 
+* At a re-encountered decision, whether a relevant prior entry was surfaced.
+
+**What we're not doing**
+
+*Agentic follow-ups after a save.* Many tax decisions have a time-sensitive tail. An amendment carries a §6511 backstop (roughly three years from the original filing). A deferred deduction has a follow-up action in a later filing year. An installment election spans years of dated reminders. After a save, an agent could put dated tasks directly on the user's calendar (Google Calendar, Outlook): "Second amendment due by [date]; §6511 window closes [date]." This extends the Handbook from a memory layer into a quiet operational partner, and brings real peace of mind. The calendar integration itself is well-trodden and not the hard part. Out of scope for v1.
