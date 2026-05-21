@@ -173,16 +173,6 @@ export function Dashboard({ entries }: { entries: Entry[] }) {
       </div>
 
       <InstallCard />
-
-      <footer className="page-footer">
-        <a
-          href="https://github.com/ccahahn/handbook-mcp"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          ccahahn/handbook-mcp
-        </a>
-      </footer>
     </main>
   );
 }
