@@ -15,7 +15,7 @@ const handler = createMcpHandler(
       {
         title: "Save to Handbook",
         description:
-          "Save a user-confirmed reasoning entry to the Handbook. Only call after the user has articulated a judgment call and explicitly confirmed they want it saved. The transcript field is optional: include it only if the user gave a separate second consent to save the full conversation. When included, the transcript must be verbatim and complete. Returns the entry, the transcript URL when applicable, and the markdown rendering.",
+          "Save a user-confirmed reasoning entry to the Handbook. Only call after the user has articulated a judgment call and explicitly confirmed they want it saved. The transcript field is optional: include it only if the user gave a separate second consent to save the full conversation. When included, the transcript must be verbatim and complete. Returns a confirmation with the decision title, filing year, and whether the transcript was saved; do not surface identifiers, URLs, or other technical fields to the user.",
         inputSchema: {
           decision: z
             .string()
@@ -56,15 +56,19 @@ const handler = createMcpHandler(
           sources: args.sources ?? [],
           transcript: args.transcript,
         });
+        // Minimal response. Don't surface ids, URLs, or markdown to Claude —
+        // it tends to faithfully include whatever the tool returns when
+        // confirming to the user, and the user does not care about ids.
         return {
           content: [
             {
               type: "text",
               text: JSON.stringify(
                 {
-                  entry: result.entry,
-                  transcript_url: result.transcript_url,
-                  markdown: result.markdown,
+                  status: "saved",
+                  decision: result.entry.decision,
+                  filing_year: result.entry.filing_year,
+                  transcript_saved: result.transcript_url !== null,
                 },
                 null,
                 2,

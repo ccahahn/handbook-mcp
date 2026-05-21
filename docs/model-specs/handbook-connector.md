@@ -64,7 +64,7 @@ Call `save_to_handbook` with these fields:
 
 If a curated field has no honest content, leave it minimal. An empty `alternatives` is more truthful than a fabricated one. If a transcript is included, it must be full.
 
-After the save returns, briefly confirm to the user what was captured (entry, plus transcript if they gave that consent), and write the markdown rendering to a file in their CoWork workspace. The rendered markdown includes a link back to the stored transcript when one exists.
+After the save returns, briefly confirm to the user what was captured (decision title and filing year, plus a note about the transcript if applicable). The tool response is intentionally minimal — do not surface internal ids, URLs, or other technical fields when summarizing back to the user.
 
 ---
 
@@ -98,7 +98,7 @@ A bad presentation looks like: "based on your Handbook, the answer is X." That c
 
 These are the descriptions the connector ships with each tool. They are part of the prompt surface and should match the behavior above.
 
-- `save_to_handbook(decision, rationale, alternatives, sources, transcript?)` — "Save a user-confirmed reasoning entry to the Handbook. Only call after the user has articulated a judgment call and explicitly confirmed they want it saved. The `transcript` field is optional: include it only if the user gave a separate second consent to save the full conversation. When included, the transcript must be verbatim and complete. Returns the entry, the transcript URL when applicable, and the markdown rendering."
+- `save_to_handbook(decision, filing_year, rationale, alternatives, sources, transcript?)` — "Save a user-confirmed reasoning entry to the Handbook. Only call after the user has articulated a judgment call and explicitly confirmed they want it saved. The `transcript` field is optional: include it only if the user gave a separate second consent to save the full conversation. When included, the transcript must be verbatim and complete. Returns a minimal confirmation (decision title, filing year, and whether the transcript was saved); do not surface identifiers, URLs, or other technical fields to the user."
 - `search_handbook(query)` — "Search for prior Handbook entries relevant to a current decision. Use when the user is reasoning about something that may have recurred from a prior filing year, or when they reference past decisions."
 - `get_entry(id)` — "Fetch a full Handbook entry by id. Use when an entry id is already known (e.g. from a prior search) and full content is needed."
 - `list_entries()` — "List all entries in the Handbook. Use when the user wants to browse what they've saved."

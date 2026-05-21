@@ -48,7 +48,7 @@ The demo is single-tenant. One connector deployment, one user, one database name
 3. **Confirm.** The user confirms once, which covers the curated entry. Claude calls `save_to_handbook` with the decision, rationale in the user's words, alternatives weighed, and the sources cited. 
 4. **Write transcript.** Claude then asks if they want to save the full transcript. If yes, the connector writes the transcript to Vercel Blob first and gets back a blob URL. Blob-first ordering means a downstream Postgres failure leaves only a harmless orphan blob, not an entry pointing to nothing. The full conversation transcript is saved as a string parameter.
 5. **Write entry.** The connector validates the entry payload against the schema, generates an id and timestamp, attaches the blob URL, and writes the entry row to Postgres.
-6. **Render.** The connector returns the saved entry, the transcript URL of the chat, and the markdown rendering in the tool response.
+6. **Confirm.** The connector returns a minimal confirmation (decision title, filing year, and whether a transcript was saved). Internal identifiers and URLs are not surfaced to the user.
 7. **Mirror.** Claude takes the markdown and writes it to a file in CoWork, naming it by decision title and filing year. The markdown includes a "see full conversation" link to the transcript blob.
 
 **Retrieval flow.** Retrieval is user-initiated. The user explicitly references the Handbook ("did I do this last year?", "what did I decide about X?") and the flow proceeds:
@@ -59,7 +59,7 @@ The demo is single-tenant. One connector deployment, one user, one database name
 
 ## Connector tools
 
-- `save_to_handbook(decision, filing_year, rationale, alternatives, sources, transcript?)` — writes a user-confirmed entry to Postgres and (if the user gave the second consent) the full conversation transcript to Blob; returns the entry, the transcript URL when applicable, and its markdown rendering.
+- `save_to_handbook(decision, filing_year, rationale, alternatives, sources, transcript?)` — writes a user-confirmed entry to Postgres and (if the user gave the second consent) the full conversation transcript to Blob; returns a minimal confirmation (decision title, filing year, transcript-saved flag).
 - `search_handbook(query)` — on-demand similarity search for relevant prior entries.
 - `get_entry(id)` — full entry by id.
 - `list_entries()` — for browsing the Handbook.
