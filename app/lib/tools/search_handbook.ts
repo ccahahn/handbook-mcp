@@ -1,4 +1,4 @@
-import { searchEntries } from "../kv";
+import { searchEntries } from "../db";
 import type { Entry } from "../schema";
 
 export async function searchHandbook(query: string): Promise<Entry[]> {

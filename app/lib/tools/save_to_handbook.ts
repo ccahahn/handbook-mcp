@@ -1,5 +1,5 @@
 import { EntryInputSchema, type Entry, type EntryInput } from "../schema";
-import { putEntry } from "../kv";
+import { putEntry } from "../db";
 import { putTranscript } from "../blob";
 import { renderEntryMarkdown } from "../render";
 

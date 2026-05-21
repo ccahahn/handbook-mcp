@@ -1,6 +1,6 @@
 # Handbook connector
 
-MCP connector for the Handbook: a reasoning-memory layer for the user's financial judgment calls. Saves user-confirmed entries to Upstash Redis; optionally saves the full source conversation as a transcript to Vercel Blob.
+MCP connector for the Handbook: a reasoning-memory layer for the user's financial judgment calls. Saves user-confirmed entries to Neon Postgres; optionally saves the full source conversation as a transcript to Vercel Blob.
 
 See `../docs/strategy/spec.md` for product framing and `../docs/build/architecture.md` for system design.
 
@@ -8,16 +8,18 @@ See `../docs/strategy/spec.md` for product framing and `../docs/build/architectu
 
 - Next.js (App Router) on Vercel
 - `mcp-handler` + `@modelcontextprotocol/sdk` for MCP transport
-- `@upstash/redis` for entry storage
+- `@neondatabase/serverless` for entry storage (Neon Postgres)
 - `@vercel/blob` for transcript storage
 - `zod` for input validation
 
 ## One-time setup
 
 1. Create a Vercel project pointed at this directory.
-2. From the project dashboard, add the **Upstash Redis** integration via Marketplace. This auto-populates `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN`.
+2. From the project's **Storage** tab, create a **Neon Postgres** database. This auto-populates `DATABASE_URL`.
 3. Add the **Vercel Blob** store. This auto-populates `BLOB_READ_WRITE_TOKEN`.
 4. Copy `.env.local.example` to `.env.local` and fill in the same values for local dev: `vercel env pull .env.local` is the easiest path.
+
+The first POST to `/api/init` runs `CREATE TABLE IF NOT EXISTS` and loads seeds. No separate migration step.
 
 ## Local dev
 
@@ -42,7 +44,7 @@ Idempotent: already-seeded entries are skipped. The route only loads bundled syn
 npx @modelcontextprotocol/inspector
 ```
 
-UI opens on `http://localhost:6274`. Connect to `http://localhost:3000/api/mcp` (transport: HTTP). Exercise the four tools, watch Redis/Blob writes happen.
+UI opens on `http://localhost:6274`. Connect to `http://localhost:3000/api/mcp` (transport: HTTP). Exercise the four tools, watch Postgres/Blob writes happen.
 
 Requires Node 22.7.5+.
 
@@ -75,6 +77,6 @@ Tool descriptions and server-level instructions are in `lib/instructions.ts`. Th
 
 ## Notes
 
-- v1 search is substring matching. Upgrade path is Upstash Vector or a small embedding index if relevance gets thin past 20-30 entries.
+- v1 search is `ILIKE` substring matching. Upgrade path is Postgres full-text search (`tsvector` + `ts_rank`) or an embedding index if relevance gets thin past 20-30 entries.
 - Single-tenant by deployment. No user identity layer. See architecture's infrastructure proposals for the multi-user path.
 - Transcript URLs are public (anyone with the URL can read). Suffixes are random so they're unguessable, but treat the URL itself as the access control.

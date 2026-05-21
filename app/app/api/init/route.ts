@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import seeds from "@/data/seed_entries.json";
-import { putEntry, getEntry } from "@/lib/kv";
+import { putEntry, getEntry, ensureSchema } from "@/lib/db";
 import { putTranscript } from "@/lib/blob";
 import type { Entry } from "@/lib/schema";
 
@@ -22,6 +22,7 @@ const SeedEntrySchema = z.object({
 // (already-seeded ids are skipped). No user data can be injected from outside,
 // so no auth check in v1. Revisit if seed loading ever grows destructive modes.
 export async function POST() {
+  await ensureSchema();
   const parsedSeeds = z.array(SeedEntrySchema).parse(seeds);
   const results: {
     id: string;

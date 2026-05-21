@@ -1,4 +1,4 @@
-import { getEntry } from "../kv";
+import { getEntry } from "../db";
 import type { Entry } from "../schema";
 
 export async function getHandbookEntry(id: string): Promise<Entry | null> {

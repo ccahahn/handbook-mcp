@@ -4,7 +4,7 @@ A reasoning-memory layer for financial decisions, built as a Claude MCP connecto
 
 ## Layout
 
-- [`/app`](./app) — the MCP connector (Next.js on Vercel, Upstash Redis for entries, Vercel Blob for transcripts). Start here for the quickstart.
+- [`/app`](./app) — the MCP connector (Next.js on Vercel, Neon Postgres for entries, Vercel Blob for transcripts). Start here for the quickstart.
 - [`/docs/strategy/spec.md`](./docs/strategy/spec.md) — product spec: problem, core bet, key user journey, success metrics.
 - [`/docs/build/architecture.md`](./docs/build/architecture.md) — system architecture: components, data flow, guardrails, schema.
 - [`/docs/model-specs/handbook-connector.md`](./docs/model-specs/handbook-connector.md) — behavioral contract for the connector (the prompt surface).
