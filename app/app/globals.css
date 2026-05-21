@@ -578,6 +578,14 @@ select.sort:focus {
   color: var(--ink-3);
 }
 
+.transcript-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.transcript-action,
 .transcript-download {
   display: inline-flex;
   align-items: center;
@@ -590,8 +598,11 @@ select.sort:focus {
   padding: 7px 13px;
   border-radius: 8px;
   transition: all 0.14s ease;
+  cursor: pointer;
+  font-family: inherit;
 }
 
+.transcript-action:hover,
 .transcript-download:hover {
   background: var(--hover);
 }

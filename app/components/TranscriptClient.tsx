@@ -56,6 +56,7 @@ export function TranscriptClient({ id }: { id: string }) {
     status: "loading",
   });
   const [bodyState, setBodyState] = useState<BodyState>({ status: "loading" });
+  const [copied, setCopied] = useState(false);
 
   // 1. Resolve the entry: sessionStorage first, then API.
   useEffect(() => {
@@ -136,6 +137,8 @@ export function TranscriptClient({ id }: { id: string }) {
   }
 
   const { entry } = entryState;
+  const transcriptText =
+    bodyState.status === "ready" ? bodyState.text : null;
   return (
     <main className="page">
       <Link href="/" className="transcript-back">
@@ -150,17 +153,44 @@ export function TranscriptClient({ id }: { id: string }) {
             {formatDate(entry.created_at)}
           </div>
         </div>
-        {entry.transcript_blob_key && (
+        <div className="transcript-actions">
+          {transcriptText !== null && (
+            <button
+              type="button"
+              className="transcript-action"
+              onClick={async () => {
+                try {
+                  await navigator.clipboard.writeText(transcriptText);
+                  setCopied(true);
+                  setTimeout(() => setCopied(false), 2000);
+                } catch {
+                  // clipboard may be blocked in some browsers; silently no-op
+                }
+              }}
+            >
+              <CopyIcon /> {copied ? "Copied" : "Copy transcript"}
+            </button>
+          )}
+          {entry.transcript_blob_key && (
+            <a
+              className="transcript-action"
+              href={entry.transcript_blob_key}
+              download={`${slugify(entry.decision)}.txt`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <DownloadIcon /> Download .txt
+            </a>
+          )}
           <a
-            className="transcript-download"
-            href={entry.transcript_blob_key}
-            download={`${slugify(entry.decision)}.txt`}
+            className="transcript-action"
+            href="https://claude.ai/new"
             target="_blank"
             rel="noopener noreferrer"
           >
-            <DownloadIcon /> Download .txt
+            <ExternalIcon /> Open Claude
           </a>
-        )}
+        </div>
       </div>
 
       <Body state={bodyState} />
@@ -273,6 +303,42 @@ function DownloadIcon() {
       strokeLinejoin="round"
     >
       <path d="M6 2v6m-3-3l3 3 3-3M2 10h8" />
+    </svg>
+  );
+}
+
+function CopyIcon() {
+  return (
+    <svg
+      width="12"
+      height="12"
+      viewBox="0 0 12 12"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <rect x="3.5" y="3.5" width="6" height="6" rx="1" />
+      <path d="M2 8V2.5A0.5 0.5 0 0 1 2.5 2H8" />
+    </svg>
+  );
+}
+
+function ExternalIcon() {
+  return (
+    <svg
+      width="12"
+      height="12"
+      viewBox="0 0 12 12"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M5 3H3v6h6V7" />
+      <path d="M7 2h3v3M10 2L6 6" />
     </svg>
   );
 }
